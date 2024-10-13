@@ -15,7 +15,7 @@ df = load_data()
 
 def main_page():
     st.write("## Dataset Preview")
-    st.write(df.head())  # Display the first few rows
+    st.write(df.head())  # display the first few rows
     st.write("The National Health and Nutrition Examination Survey (NHANES) dataset is a large, publicly available dataset that contains detailed health and nutrition information collected from a representative sample of the U.S. population.")
 
 def task1():
@@ -56,7 +56,7 @@ def task1():
 
             chart2 = alt.Chart(subset).mark_bar().encode(
                 x=alt.X("Use:Q", bin=alt.Bin(step=5), title="# days have 4/5 drinks in past 12 months"),
-                y=alt.Y("count(Use)", title="Frequency"),
+                y=alt.Y("count(Use)", title="Frequency in selected year"),
                 tooltip=["Use:Q", "count(Use)"],
             ).transform_filter(
                 year_selection
