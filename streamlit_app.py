@@ -110,11 +110,11 @@ def task3():
       )
       
       # Create a grouped bar plot using Altair
-      chart = alt.Chart(df_grouped).mark_bar(size=20).encode(
+      chart = alt.Chart(df_grouped).mark_bar(size=30).encode(
           x=alt.X('Usage:N', title='Substance Usage'),
           y=alt.Y('count():Q', title='Number of respondents'),
           color='Mortality:N',
-          column=alt.Column('Substance:N', title='Substance', spacing=0),
+          column=alt.Column('Substance:N', title='Substance'),
           opacity=alt.condition(
               legend_selection,  # If the cancer type is selected
               alt.value(1),      # Full opacity for selected cancer
@@ -122,13 +122,12 @@ def task3():
               )
           ).add_selection(
               legend_selection
-              ).properties(
-                  width=20,
-                  ).configure_facet(
-                      spacing=0 # Adjust the spacing between columns (grouped bar spacing)
-                      )
+          ).properties(
+              width=80
+          )
       
-      st.altair_chart(chart, use_container_width=True)
+      chart
+
 
 def task4():
     st.write("## Health Patterns")
@@ -149,6 +148,7 @@ def task4():
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]
 
     alt.data_transformers.enable(max_rows=1000000)
+
     # Create an altair selector
     legend_selection = alt.selection_single(
         fields=[df_grouped.columns[0]],
@@ -170,11 +170,10 @@ def task4():
         ).add_selection(
             legend_selection
         ).properties(
-            width=40
+            width=80
         )
 
     chart
-
 
 
 # main page
