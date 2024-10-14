@@ -136,9 +136,8 @@ def task4():
     substances = ["Alcohol", "Marijuana or hashish", "Cocaine", "Heroin", "Methamphetamine", "Injection of illegal drug"]
     health_conditions = ["Cancer or malignancy", "Congestive heart failure", "Coronary heart disease", "Angina/angina pectoris", "Heart attack"]
     
-    # select country through drop-down
-    disease_dropdown = alt.binding_select(options=health_conditions)
-    disease_select = alt.selection_single(fields=['Disease'], bind=disease_dropdown, name="Select",  init={'Disease':health_conditions[0]})
+    # Create a dropdown for users to select a health condition
+    selected_disease = st.selectbox("Select a Health Condition", health_conditions)
 
     subset = df[health_conditions + substances]
     subset.loc[subset['Alcohol'] <=366.0, 'Alcohol'] = "Yes"
@@ -146,8 +145,7 @@ def task4():
     subset.loc[subset['Alcohol'] == 999.0, 'Alcohol'] = "Don't know"
     subset.loc[subset['Alcohol'] == 777.0, 'Alcohol'] = "Don't know"
 
-    df_grouped = subset.melt(id_vars=disease_select, value_vars=substances, var_name="Substance", value_name="Usage")
-
+    df_grouped = subset.melt(id_vars=[selected_disease], value_vars=substances, var_name="Substance", value_name="Usage")
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]
 
     alt.data_transformers.enable(max_rows=1000000)
@@ -155,7 +153,7 @@ def task4():
     chart = alt.Chart(df_grouped).mark_bar().encode(
         x=alt.X('Usage:N', title='Substance Usage'),
         y=alt.Y('count():Q', title='Number of respondents'),
-        color=disease_select,
+        color=alt.Color(f'{selected_disease}:N', title="Health Condition"),
         column=alt.Column('Substance:N', title='Substance')
         ).properties(
             width=20
@@ -163,6 +161,7 @@ def task4():
       
     
     st.altair_chart(chart, use_container_width=True)
+
 
 
 # main page
