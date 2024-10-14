@@ -133,6 +133,36 @@ def task3():
 def task4():
     st.write("## Health Patterns")
     # add chart
+    substances = ["Alcohol", "Marijuana or hashish", "Cocaine", "Heroin", "Methamphetamine", "Injection of illegal drug"]
+    health_conditions = ["Cancer or malignancy", "Congestive heart failure", "Coronary heart disease", "Angina/angina pectoris", "Heart attack"]
+    
+    # select country through drop-down
+    disease_dropdown = alt.binding_select(options=health_conditions)
+    disease_select = alt.selection_single(fields=health_conditions, bind=disease_dropdown, name="Select",  init={'Disease':health_conditions[0]})
+
+    subset = df[health_conditions + substances]
+    subset.loc[subset['Alcohol'] <=366.0, 'Alcohol'] = "Yes"
+    subset.loc[subset['Alcohol'] == 0.0, 'Alcohol'] = "No"
+    subset.loc[subset['Alcohol'] == 999.0, 'Alcohol'] = "Don't know"
+    subset.loc[subset['Alcohol'] == 777.0, 'Alcohol'] = "Don't know"
+
+    df_grouped = subset.melt(id_vars=disease_select, value_vars=substances, var_name="Substance", value_name="Usage")
+
+    df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]
+
+    alt.data_transformers.enable(max_rows=1000000)
+    # Create a grouped bar plot using Altair
+    chart = alt.Chart(df_grouped).mark_bar().encode(
+        x=alt.X('Usage:N', title='Substance Usage'),
+        y=alt.Y('count():Q', title='Number of respondents'),
+        color=disease_select,
+        column=alt.Column('Substance:N', title='Substance')
+        ).properties(
+            width=20
+            )
+      
+    
+    st.altair_chart(chart, use_container_width=True)
 
 
 # main page
