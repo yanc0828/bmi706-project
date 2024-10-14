@@ -114,7 +114,7 @@ def task3():
           x=alt.X('Usage:N', title='Substance Usage'),
           y=alt.Y('count():Q', title='Number of respondents'),
           color='Mortality:N',
-          column=alt.Column('Substance:N', title='Substance', spacing=2),
+          column=alt.Column('Substance:N', title='Substance'),
           opacity=alt.condition(
               legend_selection,  # If the cancer type is selected
               alt.value(1),      # Full opacity for selected cancer
@@ -123,11 +123,7 @@ def task3():
           ).add_selection(
               legend_selection
               ).properties(
-                  width=20,  
-                  height=300  
-                  ).configure_bar(
-                      size=20  # Adjust the size of individual bars (smaller value means thinner bars)
-                      )
+                  width=120)
       
       st.altair_chart(chart, use_container_width=True)
 
