@@ -92,7 +92,7 @@ def task3():
     df_grouped = subset.melt(id_vars='Mortality', value_vars=selected_conditions, var_name='Substance', value_name='Usage')
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]  # Remove data when Usage = "Don't Know" or "Refused"
 
-    if subset.empty:
+    if df_grouped.empty:
       st.write("No data available for the selected condition")
     else:
       
