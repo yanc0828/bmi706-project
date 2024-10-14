@@ -138,7 +138,7 @@ def task4():
     
     # select country through drop-down
     disease_dropdown = alt.binding_select(options=health_conditions)
-    disease_select = alt.selection_single(fields=health_conditions, bind=disease_dropdown, name="Select",  init={'Disease':health_conditions[0]})
+    disease_select = alt.selection_single(fields=['Disease'], bind=disease_dropdown, name="Select",  init={'Disease':health_conditions[0]})
 
     subset = df[health_conditions + substances]
     subset.loc[subset['Alcohol'] <=366.0, 'Alcohol'] = "Yes"
