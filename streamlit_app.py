@@ -158,9 +158,7 @@ def task4():
         ).properties(
             width=20
             )
-      
-    
-    st.altair_chart(chart, use_container_width=False)
+    chart
 
 
 
