@@ -119,12 +119,12 @@ def task3():
           ).add_selection(
               legend_selection
               ).properties(
-                  width=90,  
+                  width=30,  
                   height=300  
                   ).configure_bar(
                       size=20  # Adjust the size of individual bars (smaller value means thinner bars)
                       ).configure_facet(
-                          spacing=5  # Adjust the spacing between columns (grouped bar spacing)
+                          spacing=1  # Adjust the spacing between columns (grouped bar spacing)
                           )
       
       st.altair_chart(chart, use_container_width=True)
