@@ -97,7 +97,7 @@ def task3():
     df_grouped = subset.melt(id_vars='Mortality', value_vars=selected_conditions, var_name='Condition', value_name='Usage')
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]  # Remove data when Usage = "Don't Know" or "Refused"
 
-    if subset.empty:
+    if df_grouped.empty:
         st.write("No data available for the selected condition")
     else:
       
@@ -114,7 +114,7 @@ def task3():
             x=alt.X('Usage:N', title='Substance Usage'),
             y=alt.Y('count():Q', title='Number of respondents'),
             color='Mortality:N',
-            column=alt.Column('Substance:N', title='Substance', spacing=10),
+            column=alt.Column('Substance:N', title='Substance', spacing=5),
             opacity=alt.condition(
                 legend_selection,  # If the cancer type is selected
                 alt.value(1),      # Full opacity for selected cancer
