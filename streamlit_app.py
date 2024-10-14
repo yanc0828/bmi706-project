@@ -123,7 +123,7 @@ def task3():
           ).add_selection(
               legend_selection
               ).properties(
-                  width=120)
+                  width=20)
       
       st.altair_chart(chart, use_container_width=True)
 
