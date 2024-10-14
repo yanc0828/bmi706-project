@@ -114,7 +114,7 @@ def task3():
           x=alt.X('Usage:N', title='Substance Usage'),
           y=alt.Y('count():Q', title='Number of respondents'),
           color='Mortality:N',
-          column=alt.Column('Substance:N', title='Substance', spacing=5),
+          column=alt.Column('Substance:N', title='Substance', spacing=0),
           opacity=alt.condition(
               legend_selection,  # If the cancer type is selected
               alt.value(1),      # Full opacity for selected cancer
@@ -125,7 +125,7 @@ def task3():
               ).properties(
                   width=20,
                   ).configure_facet(
-                      spacing=5  # Adjust the spacing between columns (grouped bar spacing)
+                      spacing=0 # Adjust the spacing between columns (grouped bar spacing)
                       )
       
       st.altair_chart(chart, use_container_width=True)
