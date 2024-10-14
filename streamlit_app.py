@@ -150,7 +150,7 @@ def task4():
 
     alt.data_transformers.enable(max_rows=1000000)
     # Create a grouped bar plot using Altair
-    chart = alt.Chart(df_grouped).mark_bar().encode(
+    chart = alt.Chart(df_grouped).mark_bar(size=20).encode(
         x=alt.X('Usage:N', title='Substance Usage'),
         y=alt.Y('count():Q', title='Number of respondents'),
         color=alt.Color(f'{selected_disease}:N', title="Health Condition"),
