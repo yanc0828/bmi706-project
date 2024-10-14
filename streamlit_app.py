@@ -84,13 +84,12 @@ def task2():
 def task3():
     st.write("## Mortality Patterns")
     # add chart
-
     conditions = ["Alcohol", "Marijuana or hashish", "Cocaine", "Heroin", "Methamphetamine", "Injection of illegal drug"]
 
-    selected_conditions = st.multiselect("Conditions", conditions, default = countries) # multi-select widge
+    selected_conditions = st.multiselect("Conditions", conditions, default = conditions) # multi-select widge
     subset = df[["Mortality"] + selected_conditions]
 
-    df_grouped = subset.melt(id_vars='Mortality', value_vars=a, var_name='Condition', value_name='Usage')
+    df_grouped = subset.melt(id_vars='Mortality', value_vars=selected_conditions, var_name='Substance', value_name='Usage')
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]  # Remove data when Usage = "Don't Know" or "Refused"
 
     if subset.empty:
