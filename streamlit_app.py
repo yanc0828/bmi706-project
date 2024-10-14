@@ -149,15 +149,30 @@ def task4():
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]
 
     alt.data_transformers.enable(max_rows=1000000)
+    # Create an altair selector
+    legend_selection = alt.selection_single(
+        fields=[df_grouped.columns[0]],
+        bind='legend',
+        name=df_grouped.columns[0]
+      )
+
     # Create a grouped bar plot using Altair
-    chart = alt.Chart(df_grouped).mark_bar(size=20).encode(
+    chart = alt.Chart(df_grouped).mark_bar(size=30).encode(
         x=alt.X('Usage:N', title='Substance Usage'),
         y=alt.Y('count():Q', title='Number of respondents'),
         color=alt.Color(f'{selected_disease}:N', title="Health Condition"),
-        column=alt.Column('Substance:N', title='Substance')
-        ).properties(
-            width=20
+        column=alt.Column('Substance:N', title='Substance'),
+        opacity=alt.condition(
+            legend_selection, 
+            alt.value(1),      
+            alt.value(0.3)     
             )
+        ).add_selection(
+            legend_selection
+        ).properties(
+            width=40
+        )
+
     chart
 
 
