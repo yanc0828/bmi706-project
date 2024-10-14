@@ -123,7 +123,7 @@ def task3():
           ).add_selection(
               legend_selection
           ).properties(
-              width=80
+              width=120
           )
       
       chart
@@ -170,7 +170,7 @@ def task4():
         ).add_selection(
             legend_selection
         ).properties(
-            width=80
+            width=120
         )
 
     chart
