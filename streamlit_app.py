@@ -126,7 +126,8 @@ def task3():
                   width=20,
                   ).configure_facet(
                       spacing=0 # Adjust the spacing between columns (grouped bar spacing)
-                      )
+                      ).configure_concat(spacing=0  # Remove additional spacing between charts
+        )
       
       st.altair_chart(chart, use_container_width=True)
 
