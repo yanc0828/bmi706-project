@@ -85,6 +85,46 @@ def task3():
     st.write("## Mortality Patterns")
     # add chart
 
+    conditions = ["Alcohol", "Marijuana or hashish", "Cocaine", "Heroin", "Methamphetamine", "Injection of illegal drug"]
+
+    selected_conditions = st.multiselect("Conditions", conditions, default = countries) # multi-select widge
+    subset = df[["Mortality"] + selected_conditions]
+
+    df_grouped = subset.melt(id_vars='Mortality', value_vars=a, var_name='Condition', value_name='Usage')
+    df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]  # Remove data when Usage = "Don't Know" or "Refused"
+
+    if subset.empty:
+      st.write("No data available for the selected condition")
+    else:
+      
+      alt.data_transformers.enable(max_rows=210000)
+      
+      # Create an altair selector
+      legend_selection = alt.selection_single(
+          fields=['Mortality'],
+          bind='legend',
+          name="Mortality"
+      )
+      
+      # Create a grouped bar plot using Altair
+      chart = alt.Chart(df_grouped).mark_bar().encode(
+          x=alt.X('Usage:N', title='Substance Usage'),
+          y=alt.Y('count():Q', title='Number of respondents'),
+          color='Mortality:N',
+          column=alt.Column('Substance:N', title='Substance'),
+          opacity=alt.condition(
+              legend_selection,  # If the cancer type is selected
+              alt.value(1),      # Full opacity for selected cancer
+              alt.value(0.3)     # Lighter opacity (0.3) for unselected cancer types
+              )
+          ).add_selection(
+              legend_selection
+              ).properties(
+                  width=150
+                  )
+      
+      st.altair_chart(chart, use_container_width=True)
+
 def task4():
     st.write("## Health Patterns")
     # add chart
