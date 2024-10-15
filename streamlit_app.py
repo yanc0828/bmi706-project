@@ -1,4 +1,4 @@
-import altair as alt
+ import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -84,6 +84,63 @@ def task1():
 def task2():
     st.write("## Demographic Patterns")
     # add chart
+    substances = ["Alcohol", "Marijuana or hashish", "Cocaine", "Heroin", "Methamphetamine", "Injection of illegal drug"]
+    demographics = ["ID", "Gender", "Age", "Race", "Income", "Education"]
+    selected_substance = st.selectbox("Select a Substance", substances)
+    subset = df[[selected_substance] + demographics]
+    if selected_substance == "Alcohol":
+        subset = subset[(subset["Alcohol"] > 0.0 & subset["Alcohol"]<= 366.0)]
+    else:
+        subset = subset[subset[selected_substance]=="Yes"]
+
+    if subset.empty:
+      st.write("No data available for the selected substance usage")
+    else:
+        age_chart = alt.Chart(subset).mark_bar().encode(
+            x=alt.X("Age:Q", bins=True),
+            y=alt.Y('count(ID)', title="Frequency"),
+            tooltip=["Age", "Count(ID)"]
+        ).properties(
+            title=f"{selected_substance} users' age distribution"
+        )
+
+        known_income = subset.dropna(subset=["Income"])
+        income_chart = alt.Chart(known_income).mark_bar().encode(
+            x=alt.X("Income:Q", bins=True),
+            y=alt.Y('count(ID)', title="Frequency"),
+            tooltip=["Income", "Count(ID)"]
+        ).properties(
+            title=f"{selected_substance} users' income ratio to poverty distribution"
+        )
+        bar_charts = alt.hconcat(age_chart, income_chart)
+        st.altair_chart(bar_charts, use_container_width=True)
+
+        gender_chart = alt.Chart(subset).mark_arc().encode(
+            theta = "Gender",
+            color = "count(ID)",
+            tooltip=["Gender", "Count(ID)"]
+        ).properties(
+            title=f"{selected_substance} users' gender distribution"
+        )
+
+        race_chart = alt.Chart(subset).mark_arc().encode(
+            theta = "Race",
+            color = "count(ID)",
+            tooltip=["Race", "Count(ID)"]
+        ).properties(
+            title=f"{selected_substance} users' race distribution"
+        )
+        education_chart = alt.Chart(subset).mark_arc().encode(
+            theta = "Education",
+            color = "count(ID)",
+            tooltip=["Education", "Count(ID)"]
+        ).properties(
+            title=f"{selected_substance} users' educational attainment distribution"
+        )
+
+        pie_charts = alt.vconcat(alt.hconcat(gender_chart, race_chart), education_chart)
+        st.altair_chart(pie_charts, use_container_width=True)
+
 
 def task3():
     st.write("## Mortality Patterns")
