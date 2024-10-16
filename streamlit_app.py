@@ -32,7 +32,7 @@ def task1():
     subset = df[(df['Year'] >= year[0]) & (df['Year'] <= year[1])]
 
     drugs = ['Alcohol', 'Marijuana or hashish', 'Cocaine', 'Heroin', 'Methamphetamine', 'Injection of illegal drug']
-    drug = st.selectbox("Select drug", drugs, index=1)
+    drug = st.selectbox("Select a Substance", drugs, index=1)
     subset = subset[["ID", "Year", drug]]
     cols = ["ID", "Year", "Use"]
     subset.columns = cols
