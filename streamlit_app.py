@@ -89,7 +89,7 @@ def task2():
     selected_substance = st.selectbox("Select a Substance", substances)
     subset = df[[selected_substance] + demographics]
     if selected_substance == "Alcohol":
-        subset = subset[(subset["Alcohol"] > 0.0 & subset["Alcohol"]<= 366.0)]
+        subset = subset[(subset["Alcohol"] > 0.0) & (subset["Alcohol"]<= 366.0)]
     else:
         subset = subset[subset[selected_substance]=="Yes"]
 
@@ -97,50 +97,61 @@ def task2():
       st.write("No data available for the selected substance usage")
     else:
         age_chart = alt.Chart(subset).mark_bar().encode(
-            x=alt.X("Age:Q", bins=True),
+            x=alt.X("Age:Q", bin=True),
             y=alt.Y('count(ID)', title="Frequency"),
-            tooltip=["Age", "Count(ID)"]
+            tooltip=["Age", "count(ID)"]
         ).properties(
-            title=f"{selected_substance} users' age distribution"
+            title=f"{selected_substance} users' age distribution",
+            height=300,
+            width=400
         )
 
         known_income = subset.dropna(subset=["Income"])
         income_chart = alt.Chart(known_income).mark_bar().encode(
-            x=alt.X("Income:Q", bins=True),
+            x=alt.X("Income:Q", bin=True),
             y=alt.Y('count(ID)', title="Frequency"),
-            tooltip=["Income", "Count(ID)"]
+            tooltip=["Income", "count(ID)"]
         ).properties(
-            title=f"{selected_substance} users' income ratio to poverty distribution"
+            title=f"{selected_substance} users' income ratio to poverty distribution",
+            height=300,
+            width=400
         )
         bar_charts = alt.hconcat(age_chart, income_chart)
         st.altair_chart(bar_charts, use_container_width=True)
 
         gender_chart = alt.Chart(subset).mark_arc().encode(
-            theta = "Gender",
-            color = "count(ID)",
-            tooltip=["Gender", "Count(ID)"]
+            theta = "count(ID)",
+            color = "Gender",
+            tooltip=["Gender", "count(ID)"]
         ).properties(
-            title=f"{selected_substance} users' gender distribution"
+            title=f"{selected_substance} users' gender distribution",
+            height=250,
+            width=250
         )
 
         race_chart = alt.Chart(subset).mark_arc().encode(
-            theta = "Race",
-            color = "count(ID)",
-            tooltip=["Race", "Count(ID)"]
+            theta = "count(ID)",
+            color = "Race",
+            tooltip=["Race", "count(ID)"]
         ).properties(
-            title=f"{selected_substance} users' race distribution"
+            title=f"{selected_substance} users' race distribution",
+            height=250,
+            width=250
         )
         education_chart = alt.Chart(subset).mark_arc().encode(
-            theta = "Education",
-            color = "count(ID)",
-            tooltip=["Education", "Count(ID)"]
+            theta = "count(ID)",
+            color = "Education",
+            tooltip=["Education", "count(ID)"]
         ).properties(
-            title=f"{selected_substance} users' educational attainment distribution"
+            title=f"{selected_substance} users' education distribution",
+            height=250,
+            width=250
         )
 
-        pie_charts = alt.vconcat(alt.hconcat(gender_chart, race_chart), education_chart)
+        pie_charts = alt.hconcat(gender_chart, race_chart, education_chart).resolve_scale(
+            color='independent'
+            )
         st.altair_chart(pie_charts, use_container_width=True)
-
 
 def task3():
     st.write("## Mortality Patterns")
