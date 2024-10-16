@@ -16,15 +16,20 @@ df = load_data()
 def main_page():
     st.write("## Dataset Preview")
     st.write(df.head())  # display the first few rows
-    st.write("The National Health and Nutrition Examination Survey (NHANES) dataset is a large, publicly available dataset that contains detailed health and nutrition information collected from a representative sample of the U.S. population.")
+    st.write("## About NHANES")
+    st.write("The National Health and Nutrition Examination Survey (NHANES) is a program of studies designed to assess the health and nutritional status of adults and children in the United States. The survey is unique in that it combines interviews and physical examinations. NHANES is a major program of the National Center for Health Statistics (NCHS). NCHS is part of the Centers for Disease Control and Prevention (CDC) and has the responsibility for producing vital and health statistics for the Nation.")
+    st.write("The NHANES program began in the early 1960s and has been conducted as a series of surveys focusing on different population groups or health topics. In 1999, the survey became a continuous program that has a changing focus on a variety of health and nutrition measurements to meet emerging needs. The survey examines a nationally representative sample of about 5,000 persons each year. These persons are located in counties across the country, 15 of which are visited each year.")
+    st.write("The NHANES interview includes demographic, socioeconomic, dietary, and health-related questions. The examination component consists of medical, dental, and physiological measurements, as well as laboratory tests administered by highly trained medical personnel.")
+    st.write("Findings from this survey will be used to determine the prevalence of major diseases and risk factors for diseases. Information will be used to assess nutritional status and its association with health promotion and disease prevention. NHANES findings are also the basis for national standards for such measurements as height, weight, and blood pressure. Data from this survey will be used in epidemiological studies and health sciences research, which help develop sound public health policy, direct and design health programs and services, and expand the health knowledge for the Nation.")
+    st.write("NHANES website: https://www.cdc.gov/nchs/nhanes/about_nhanes.htm")
 
 def task1():
 
     st.write("## Temporal Patterns")
 
     year = st.slider(
-        "Year", min_value=1999, max_value=2018, value=2015)
-    subset = df[df["Year"] <= year]
+        "Year", min_value=1999, max_value=2018, value=[2003, 2015])
+    subset = df[(df['Year'] >= year[0]) & (df['Year'] <= year[1])]
 
     drugs = ['Alcohol', 'Marijuana or hashish', 'Cocaine', 'Heroin', 'Methamphetamine', 'Injection of illegal drug']
     drug = st.selectbox("Select drug", drugs, index=1)
@@ -38,7 +43,7 @@ def task1():
     else:
         if drug == "Alcohol":
 
-            subset = subset[subset['Use'] < 366]
+            subset = subset[subset['Use'] <= 366]
             subset = subset[subset['Use'] > 0]
 
             year_selection = alt.selection_single(
@@ -50,7 +55,7 @@ def task1():
                 y=alt.Y("count(Use)", title="Frequency"),
                 tooltip=["Year", "count(Use)"],
             ).properties(
-                title=f"Alcohol usage from 1999 to {year}",
+                title=f"Alcohol usage from {year[0]} to {year[1]}",
             ).add_selection(
                 year_selection
             )
@@ -73,13 +78,13 @@ def task1():
                 color = alt.Color("Use:N"),
                 tooltip=["Year", "count(Use)"],
             ).properties(
-                title=f"{drug} usage from 1999 to {year}",
+                title=f"{drug} usage from {year[0]} to {year[1]}",
             )
 
             st.altair_chart(chart, use_container_width=True)
 
-            if drug != "Injection of illegal drug":
-                st.write("No data from 1999 to 2005")
+            if drug != "Injection of illegal drug" and year[0] < 2005:
+                st.write(f"No data from {year[0]} to 2005")
 
 def task2():
     st.write("## Demographic Patterns")
