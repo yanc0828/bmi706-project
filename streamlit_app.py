@@ -36,7 +36,7 @@ def task1():
     subset = subset[["ID", "Year", drug]]
     cols = ["ID", "Year", "Use"]
     subset.columns = cols
-    subset = subset[subset['Use'] == "Yes"]
+    subset = subset[subset['Use'] != "Don't know"]
 
     if subset.empty:
         st.write("No data available for selected year range")
@@ -72,7 +72,8 @@ def task1():
             st.altair_chart(final_chart, use_container_width=True)
 
         else:
-            chart = alt.Chart(subset).mark_line(point=True).encode(
+            subset_users = subset[subset['Use'] == "Yes"]
+            chart = alt.Chart(subset_users).mark_line(point=True).encode(
                 x=alt.X("Year:N"),
                 y=alt.Y("count(Use)", title="Frequency"),
                 color = alt.Color("Use:N"),
