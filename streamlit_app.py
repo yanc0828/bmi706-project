@@ -50,10 +50,15 @@ def task1():
                 fields=['Year']
             )
 
-            chart = alt.Chart(subset).mark_line(point=True).encode(
+            chart = alt.Chart(subset).mark_line(point=alt.OverlayMarkDef(size=100)).encode(
                 x=alt.X("Year:N"),
                 y=alt.Y("count(Use)", title="Frequency"),
                 tooltip=["Year", "count(Use)"],
+                opacity=alt.condition(
+                    year_selection,
+                    alt.value(1),
+                    alt.value(0.15)
+                )
             ).properties(
                 title=f"Alcohol usage from {year[0]} to {year[1]}",
             ).add_selection(
@@ -66,17 +71,18 @@ def task1():
                 tooltip=["Use:Q", "count(Use)"],
             ).transform_filter(
                 year_selection
-            )
+            ).properties(
+                title="Number of days having 4 or 5 drinks in selected year",
+            ) 
 
             final_chart = alt.vconcat(chart, chart2)
             st.altair_chart(final_chart, use_container_width=True)
 
         else:
             subset_users = subset[subset['Use'] == "Yes"]
-            chart = alt.Chart(subset_users).mark_line(point=True).encode(
+            chart = alt.Chart(subset_users).mark_line(point=alt.OverlayMarkDef(size=100)).encode(
                 x=alt.X("Year:N"),
                 y=alt.Y("count(Use)", title="Frequency"),
-                color = alt.Color("Use:N"),
                 tooltip=["Year", "count(Use)"],
             ).properties(
                 title=f"{drug} usage from {year[0]} to {year[1]}",
@@ -111,7 +117,7 @@ def task2():
             height=300,
             width=400
         )
-
+        
         known_income = subset.dropna(subset=["Income"])
         income_chart = alt.Chart(known_income).mark_bar().encode(
             x=alt.X("Income:Q", bin=True),
@@ -144,6 +150,7 @@ def task2():
             height=250,
             width=250
         )
+
         education_chart = alt.Chart(subset).mark_arc().encode(
             theta = "count(ID)",
             color = "Education",
@@ -161,7 +168,7 @@ def task2():
 
 def task3():
     st.write("## Mortality Patterns")
-    # add chart
+
     conditions = ["Alcohol", "Marijuana or hashish", "Cocaine", "Heroin", "Methamphetamine", "Injection of illegal drug"]
 
     selected_conditions = st.multiselect("Substances", conditions, default = conditions) # multi-select widge
@@ -171,36 +178,36 @@ def task3():
     df_grouped = df_grouped[df_grouped['Usage'].isin(['Yes', 'No'])]  # Remove data when Usage = "Don't Know" or "Refused"
 
     if df_grouped.empty:
-      st.write("No data available for the selected substance usage")
+        st.write("No data available for the selected substance usage")
     else:
       
-      alt.data_transformers.enable(max_rows=210000)
+        alt.data_transformers.enable(max_rows=210000)
       
-      # Create an altair selector
-      legend_selection = alt.selection_single(
-          fields=['Mortality'],
-          bind='legend',
-          name="Mortality"
-      )
+        # Create an altair selector
+        legend_selection = alt.selection_single(
+            fields=['Mortality'],
+            bind='legend',
+            name="Mortality"
+        )
       
-      # Create a grouped bar plot using Altair
-      chart = alt.Chart(df_grouped).mark_bar(size=30).encode(
-          x=alt.X('Usage:N', title='Substance Usage'),
-          y=alt.Y('count():Q', title='Number of respondents'),
-          color='Mortality:N',
-          column=alt.Column('Substance:N', title='Substance'),
-          opacity=alt.condition(
-              legend_selection,  # If the cancer type is selected
-              alt.value(1),      # Full opacity for selected cancer
-              alt.value(0.3)     # Lighter opacity (0.3) for unselected cancer types
-              )
-          ).add_selection(
-              legend_selection
-          ).properties(
-              width=120
-          )
+        # Create a grouped bar plot using Altair
+        chart = alt.Chart(df_grouped).mark_bar(size=30).encode(
+            x=alt.X('Usage:N', title='Substance Usage'),
+            y=alt.Y('count():Q', title='Number of respondents'),
+            color='Mortality:N',
+            column=alt.Column('Substance:N', title='Substance'),
+            opacity=alt.condition(
+                legend_selection,  # If the cancer type is selected
+                alt.value(1),      # Full opacity for selected cancer
+                alt.value(0.3)     # Lighter opacity (0.3) for unselected cancer types
+                )
+            ).add_selection(
+                legend_selection
+            ).properties(
+                width=120
+            )
       
-      chart
+        chart
 
 
 def task4():
