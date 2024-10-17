@@ -36,7 +36,7 @@ def task1():
     subset = subset[["ID", "Year", drug]]
     cols = ["ID", "Year", "Use"]
     subset.columns = cols
-    subset = subset[subset['Use'] != "Don't know"]
+    subset = subset[subset['Use'] == "Yes"]
 
     if subset.empty:
         st.write("No data available for selected year range")
